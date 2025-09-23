@@ -48,9 +48,11 @@ st.markdown("""
 def load_forecast_data():
     """Load forecast data."""
     try:
-        base = pd.read_csv("../data/forecast_baseline.csv", parse_dates=["datetime"])
-        shock = pd.read_csv("../data/forecast_scenario_shock.csv", parse_dates=["datetime"])
-        delta = pd.read_csv("../data/forecast_scenario_delta.csv", parse_dates=["datetime"])
+        import os
+        data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data")
+        base = pd.read_csv(os.path.join(data_dir, "forecast_baseline.csv"), parse_dates=["datetime"])
+        shock = pd.read_csv(os.path.join(data_dir, "forecast_scenario_shock.csv"), parse_dates=["datetime"])
+        delta = pd.read_csv(os.path.join(data_dir, "forecast_scenario_delta.csv"), parse_dates=["datetime"])
 
         for df in [base, shock, delta]:
             if "region" in df.columns:

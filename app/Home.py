@@ -28,59 +28,166 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for professional styling
+# Custom CSS for professional enterprise styling
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    html, body, [class*="css"] {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
     .main > div {
-        padding-top: 2rem;
+        padding-top: 1.5rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+    }
+
+    .stApp {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     }
 
     .metric-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 1.5rem;
-        border-radius: 12px;
+        background: linear-gradient(135deg, #1e40af 0%, #3730a3 50%, #581c87 100%);
+        padding: 2rem;
+        border-radius: 16px;
         color: white;
-        margin: 0.5rem 0;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        margin: 0.75rem 0;
+        box-shadow: 0 8px 32px rgba(30, 64, 175, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
     }
 
     .metric-value {
-        font-size: 2.5rem;
-        font-weight: bold;
+        font-size: 3rem;
+        font-weight: 700;
         margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .metric-label {
-        font-size: 0.9rem;
-        opacity: 0.9;
-        margin: 0;
+        font-size: 1rem;
+        opacity: 0.95;
+        margin: 0.5rem 0 0 0;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .kpi-container {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        border-left: 4px solid #667eea;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        backdrop-filter: blur(10px);
+        border-left: 5px solid #3b82f6;
     }
 
     .sidebar .sidebar-content {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+        border-right: 1px solid #e2e8f0;
     }
 
     .stAlert {
-        border-radius: 8px;
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
     }
 
     h1 {
-        color: #2c3e50;
-        font-weight: 700;
+        color: #1e293b !important;
+        font-weight: 900 !important;
         margin-bottom: 2rem;
+        font-size: 2.8rem !important;
+        text-shadow: 0 3px 6px rgba(0,0,0,0.15) !important;
+        letter-spacing: -0.5px;
     }
 
-    h2, h3 {
-        color: #34495e;
+    h2 {
+        color: #334155;
+        font-weight: 700;
+        font-size: 1.75rem;
+        margin: 1.5rem 0 1rem 0;
+    }
+
+    h3 {
+        color: #475569;
         font-weight: 600;
+        font-size: 1.25rem;
+        margin: 1rem 0 0.75rem 0;
+    }
+
+    .stMetric {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        border: 1px solid rgba(226, 232, 240, 0.6);
+    }
+
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        padding: 8px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        background: transparent;
+        border-radius: 8px;
+        color: #64748b;
+        font-weight: 500;
+        border: none;
+        padding: 12px 24px;
+        transition: all 0.3s ease;
+    }
+
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .stSelectbox > div > div {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .stButton > button {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+
+    div[data-testid="metric-container"] {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+
+    .plot-container {
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+        border: 1px solid rgba(226, 232, 240, 0.6);
+        margin: 1rem 0;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -175,9 +282,10 @@ def run_forecast_and_preview():
             return False, message, None
 
         # Load the generated data for preview
-        base = pd.read_csv("../data/forecast_baseline.csv", parse_dates=["datetime"])
-        shock = pd.read_csv("../data/forecast_scenario_shock.csv", parse_dates=["datetime"])
-        delta = pd.read_csv("../data/forecast_scenario_delta.csv", parse_dates=["datetime"])
+        data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+        base = pd.read_csv(os.path.join(data_dir, "forecast_baseline.csv"), parse_dates=["datetime"])
+        shock = pd.read_csv(os.path.join(data_dir, "forecast_scenario_shock.csv"), parse_dates=["datetime"])
+        delta = pd.read_csv(os.path.join(data_dir, "forecast_scenario_delta.csv"), parse_dates=["datetime"])
 
         # Create preview summary with raw numeric values
         preview_data = {
@@ -210,9 +318,10 @@ def run_forecast_and_preview():
 def load_forecast_data():
     """Load all forecast data with error handling."""
     try:
-        base = pd.read_csv("../data/forecast_baseline.csv", parse_dates=["datetime"])
-        shock = pd.read_csv("../data/forecast_scenario_shock.csv", parse_dates=["datetime"])
-        delta = pd.read_csv("../data/forecast_scenario_delta.csv", parse_dates=["datetime"])
+        data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+        base = pd.read_csv(os.path.join(data_dir, "forecast_baseline.csv"), parse_dates=["datetime"])
+        shock = pd.read_csv(os.path.join(data_dir, "forecast_scenario_shock.csv"), parse_dates=["datetime"])
+        delta = pd.read_csv(os.path.join(data_dir, "forecast_scenario_delta.csv"), parse_dates=["datetime"])
 
         # Standardize column names
         for df in [base, shock, delta]:
@@ -318,6 +427,9 @@ def create_executive_summary_chart(base_df, shock_df):
         template="plotly_white",
         title_text="📊 Executive Summary - 7-Day Forecast Overview",
         title_x=0.5,
+        font=dict(family="Inter, sans-serif", size=14),
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
         legend=dict(
             orientation="h",
             yanchor="bottom",
@@ -546,7 +658,20 @@ def main():
     # Executive Summary Chart
     st.markdown("### 📊 Executive Summary")
     fig = create_executive_summary_chart(base_filtered, shock_filtered)
-    st.plotly_chart(fig, use_container_width=True)
+
+    # Display with high-quality settings for professional screenshots
+    st.plotly_chart(fig, use_container_width=True, config={
+        'displayModeBar': True,
+        'displaylogo': False,
+        'modeBarButtonsToRemove': ['pan2d', 'lasso2d'],
+        'toImageButtonOptions': {
+            'format': 'png',
+            'filename': 'energy_forecast_executive_summary',
+            'height': 800,
+            'width': 1400,
+            'scale': 3  # High DPI for crisp screenshots
+        }
+    })
 
     # Financial Impact Calculator
     st.markdown("### 💰 Financial Impact Calculator")

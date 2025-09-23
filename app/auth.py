@@ -50,73 +50,37 @@ def generate_state_and_verifier():
 
 def get_google_auth_url(config):
     """Generate Google OAuth2 authorization URL."""
-    state, code_verifier, code_challenge = generate_state_and_verifier()
-
-    # Create a composite state that includes the code verifier
     import time
-    import json
-    composite_state = {
-        'state': state,
-        'verifier': code_verifier,
-        'timestamp': time.time()
-    }
+    state = secrets.token_urlsafe(32)
 
-    # Encode the composite state as base64
-    composite_state_json = json.dumps(composite_state)
-    encoded_state = base64.urlsafe_b64encode(composite_state_json.encode()).decode().rstrip('=')
-
-    # Store minimal info in session state as backup
-    st.session_state['oauth_active'] = True
+    # Store state in session for verification
+    st.session_state['oauth_state'] = state
     st.session_state['oauth_timestamp'] = time.time()
 
     auth_params = {
         'client_id': config['client_id'],
         'redirect_uri': config['redirect_uri'],
         'response_type': 'code',
-        'scope': 'openid email profile',
-        'state': encoded_state,  # Use encoded composite state
-        'code_challenge': code_challenge,
-        'code_challenge_method': 'S256',
-        'access_type': 'offline',
-        'prompt': 'select_account'
+        'scope': 'email profile',
+        'state': state,
+        'access_type': 'online'
     }
 
     auth_url = f"https://accounts.google.com/o/oauth2/auth?{urlencode(auth_params)}"
     return auth_url
 
-def exchange_code_for_token(config, authorization_code, encoded_state):
+def exchange_code_for_token(config, authorization_code, state):
     """Exchange authorization code for access token."""
-    try:
-        # Decode the composite state
-        import json
-        import time
-
-        # Add padding if needed for base64 decoding
-        missing_padding = len(encoded_state) % 4
-        if missing_padding:
-            encoded_state += '=' * (4 - missing_padding)
-
-        composite_state_json = base64.urlsafe_b64decode(encoded_state.encode()).decode()
-        composite_state = json.loads(composite_state_json)
-
-        state = composite_state['state']
-        code_verifier = composite_state['verifier']
-        timestamp = composite_state['timestamp']
-
-        # Check if state has expired (30 minutes)
-        if time.time() - timestamp > 1800:
-            return None, "Authentication session expired. Please try signing in again."
-
-    except Exception as e:
-        return None, f"Invalid state parameter: {str(e)}"
+    # Verify state
+    if state != st.session_state.get('oauth_state'):
+        return None, "Invalid state parameter"
 
     token_data = {
         'client_id': config['client_id'],
         'client_secret': config['client_secret'],
         'code': authorization_code,
         'grant_type': 'authorization_code',
-        'redirect_uri': config['redirect_uri'],
-        'code_verifier': code_verifier
+        'redirect_uri': config['redirect_uri']
     }
 
     try:
@@ -144,7 +108,7 @@ def get_user_info(access_token):
 def handle_oauth_callback():
     """Handle OAuth callback from Google."""
     # Check for authorization code in URL parameters
-    query_params = st.query_params
+    query_params = st.experimental_get_query_params()
 
     if 'code' in query_params and 'state' in query_params:
         config, error = get_google_oauth_config()
@@ -154,14 +118,16 @@ def handle_oauth_callback():
 
         # Exchange code for token
         authorization_code = query_params['code']
-        encoded_state = query_params['state']
+        state_param = query_params['state']
+        # Handle case where state might be a list (Streamlit query params can return lists)
+        state_value = state_param[0] if isinstance(state_param, list) else state_param
 
         # The state verification is now handled inside exchange_code_for_token
-        token_response, error = exchange_code_for_token(config, authorization_code, encoded_state)
+        token_response, error = exchange_code_for_token(config, authorization_code, state_value)
         if error:
             st.error(f"❌ Authentication failed: {error}")
             # Clear OAuth data
-            for key in ['oauth_active', 'oauth_timestamp']:
+            for key in ['oauth_state', 'oauth_timestamp']:
                 if key in st.session_state:
                     del st.session_state[key]
             return False
@@ -183,12 +149,16 @@ def handle_oauth_callback():
         }
 
         # Clear OAuth state after successful authentication
-        for key in ['oauth_active', 'oauth_timestamp']:
+        for key in ['oauth_state', 'oauth_timestamp']:
             if key in st.session_state:
                 del st.session_state[key]
 
         # Clear query parameters by rerunning
-        st.query_params.clear()
+        try:
+            st.experimental_set_query_params({})
+        except TypeError:
+            # Fallback for versions where set_query_params doesn't take args
+            pass
         st.rerun()
 
         return True
@@ -205,10 +175,10 @@ def show_login_page():
     """, unsafe_allow_html=True)
 
     # Clear any stale OAuth data on fresh login page load
-    query_params = st.query_params
+    query_params = st.experimental_get_query_params()
     if not ('code' in query_params or 'state' in query_params):
         # Only clear if we're not in the middle of OAuth callback
-        for key in ['oauth_active', 'oauth_timestamp']:
+        for key in ['oauth_state', 'oauth_timestamp']:
             if key in st.session_state:
                 del st.session_state[key]
 
@@ -298,6 +268,25 @@ def require_login():
     """
     Main authentication function to be called at the top of your Streamlit app.
     Returns True if user is authenticated, False otherwise.
+    """
+    # DEMO MODE: Skip authentication for showcase
+    # Set demo user if not already set
+    if 'user' not in st.session_state:
+        st.session_state['user'] = {
+            'email': 'demo@energy-ops.com',
+            'name': 'Demo User',
+            'picture': 'https://via.placeholder.com/60',
+            'verified_email': True,
+            'access_token': 'demo_token'
+        }
+
+    # Show user info in sidebar
+    show_user_info()
+    return True
+
+def require_login_original():
+    """
+    Original authentication function (for future use with real Gmail).
     """
     # Handle OAuth callback if present
     if handle_oauth_callback():
