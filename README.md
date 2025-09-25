@@ -21,7 +21,8 @@
 
 **Key Technologies:** Python, Streamlit, Plotly, Pandas, OAuth2, Power BI Integration
 
-**🎥 Live Demo:** [Watch Platform Walkthrough](https://www.canva.com/design/DAGzxJJLMEc/YlcBw7gUbsZXJF7ZRqudXA/edit?utm_content=DAGzxJJLMEc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton) *(2-minute interactive dashboard demonstration)*
+## 📺 Project Demo Video
+**🎥 [2-Minute Interactive Platform Walkthrough](https://www.canva.com/design/DAGzxJJLMEc/YlcBw7gUbsZXJF7ZRqudXA/edit?utm_content=DAGzxJJLMEc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)** *(Energy market forecasting and trading insights demonstration)*
 
 ![Energy Market KPIs](app/assets/executive_dashboard.png) *(Interactive dashboard showing real-time volatility, regional heat maps, and risk metrics)*
 
