@@ -21,8 +21,7 @@
 
 **Key Technologies:** Python, Streamlit, Plotly, Pandas, OAuth2, Power BI Integration
 
-## 📺 Interactive Platform Demo
-[![Energy Operations Forecast Demo](https://img.shields.io/badge/🎥_Watch_Demo-Interactive_Platform_Walkthrough-blue?style=for-the-badge)](https://www.canva.com/design/DAGzxJJLMEc/YlcBw7gUbsZXJF7ZRqudXA/edit?utm_content=DAGzxJJLMEc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+[![Watch Demo](https://img.shields.io/badge/Watch-Demo-green)](https://github.com/user-attachments/assets/7b1de3d0-c3e6-4809-90ac-0f7a31d3f825)
 
 *2-Minute Interactive Dashboard Walkthrough - Energy market forecasting and trading insights demonstration*
 
